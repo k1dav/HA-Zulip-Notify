@@ -7,8 +7,6 @@
     "codeowners": [
         "@k1dave6412"
     ],
-    "version": "2022.6.5",
-    "requirements": [
-        "zulip==0.8.2"
-    ]
+    "version": "2022.6.6",
+    "requirements": []
 }

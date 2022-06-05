@@ -16,8 +16,8 @@ With this custom component loaded, you can send messaged to zulip Notify.
 
 import logging
 import voluptuous as vol
+import requests
 
-import zulip
 
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.notify import (
@@ -54,20 +54,25 @@ class ZulipNotificationService(BaseNotificationService):
 
     def __init__(self, site, email, key, channel, topic):
         """Initialize the service."""
+        self.site = site
+        self.email = email
+        self.key = key
         self.channel = channel
         self.topic = topic
-        self.client = zulip.Client(site=site, email=email, key=key)
 
     def send_message(self, message="", **kwargs):
         """Send some message."""
-        req = {
-            "type": "stream",
-            "to": self.channel,
-            "topic": self.topic,
-            "content": message,
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
         }
+        data = f"type=stream&to={self.channel}&topic={self.topic}&content={message}"
 
         try:
-            self.client.send_message(req)
+            response = requests.post(
+                f"{self.site}api/v1/messages",
+                headers=headers,
+                data=data,
+                auth=(self.email, self.key),
+            )
         except Exception as e:
             _LOGGER.error(str(e))
