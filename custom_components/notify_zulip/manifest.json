@@ -1,0 +1,14 @@
+{
+    "domain": "notify_zulip",
+    "name": "Zulip Notify",
+    "documentation": "https://github.com/k1dave6412/HA-Zulip-Notify/blob/master/README.md",
+    "issue_tracker": "https://github.com/k1dave6412/HA-Zulip-Notify/issues",
+    "dependencies": [],
+    "codeowners": [
+        "@k1dave6412"
+    ],
+    "version": "2022.6.5",
+    "requirements": [
+        "zulip==0.8.2"
+    ]
+}
