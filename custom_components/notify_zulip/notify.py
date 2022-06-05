@@ -21,7 +21,6 @@ import zulip
 
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.notify import (
-    ATTR_DATA,
     PLATFORM_SCHEMA,
     BaseNotificationService,
 )
@@ -47,10 +46,10 @@ def get_service(hass, config, discovery_info=None):
     key = config.get("key")
     channel = config.get("channel")
     topic = config.get("topic")
-    return LineNotificationService(site, email, key, channel, topic)
+    return ZulipNotificationService(site, email, key, channel, topic)
 
 
-class LineNotificationService(BaseNotificationService):
+class ZulipNotificationService(BaseNotificationService):
     """Implementation of a notification service for the Line Messaging service."""
 
     def __init__(self, site, email, key, channel, topic):
@@ -61,12 +60,14 @@ class LineNotificationService(BaseNotificationService):
 
     def send_message(self, message="", **kwargs):
         """Send some message."""
-        data = kwargs.get(ATTR_DATA, None)
-
         req = {
             "type": "stream",
             "to": self.channel,
             "topic": self.topic,
             "content": message,
         }
-        self.client.send_message(req)
+
+        try:
+            self.client.send_message(req)
+        except Exception as e:
+            _LOGGER.error(str(e))
